@@ -2,7 +2,7 @@ import os
 import sys
 import requests
 from tqdm import tqdm
-
+from urllib.parse import urlparse, parse_qs
 
 
 def download(id):
@@ -53,5 +53,18 @@ def check(id):
 
 
 if __name__ == "__main__":
-    id = input("请输入表情 ID：")
+    arg = input("请输入表情ID或表情链接：")
+
+    if arg.isdigit():
+        id = arg
+    else:
+        parsed_url = urlparse(arg)
+        query_params = parse_qs(parsed_url.query)
+        id = query_params.get('id', [None])[0]
+
+    if id is None:
+        print(f"无效链接，请使用表情详细页链接")
+        sys.exit()
+    
+    
     check(id)
